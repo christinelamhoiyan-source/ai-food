@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 營養標籤掃描與計算</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>AI 營養標籤掃描</h1>
+    <p>每日目標：<strong id="calorieGoalText">1300</strong> kcal</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>今日營養進度</h2>
+      <div id="goalSummary" class="goal-summary"></div>
+      <div id="progressArea"></div>
+    </section>
+
+    <section class="card">
+      <h2>掃描營養標籤</h2>
+      <p class="hint">手機可直接開相機；電腦可選擇圖片。拍完後請確認數字。</p>
+      <input id="photoInput" type="file" accept="image/*" capture="environment" />
+      <img id="previewImage" class="preview hidden" alt="營養標籤預覽" />
+
+      <button id="demoScanBtn" class="secondary">示範辨識資料</button>
+
+      <form id="foodForm">
+        <label>食物名稱
+          <input id="foodName" type="text" placeholder="例如：雞胸肉、希臘乳酪" required />
+        </label>
+
+        <label>卡路里 kcal
+          <input id="calories" type="number" min="0" step="1" required />
+        </label>
+
+        <label>蛋白質 g
+          <input id="protein" type="number" min="0" step="0.1" required />
+        </label>
+
+        <label>碳水化合物 g
+          <input id="carbs" type="number" min="0" step="0.1" required />
+        </label>
+
+        <label>脂肪 g
+          <input id="fat" type="number" min="0" step="0.1" required />
+        </label>
+
+        <button type="submit">加入今日飲食</button>
+      </form>
+    </section>
+
+    <section id="recommendationCard" class="card recommendation hidden">
+      <h2>智能補蛋白推薦</h2>
+      <div id="recommendationText"></div>
+    </section>
+
+    <section class="card">
+      <div class="row-title">
+        <h2>今日已加入食物</h2>
+        <button id="clearBtn" class="danger">清空今日</button>
+      </div>
+      <ul id="foodList" class="food-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>資料只儲存在你的瀏覽器 localStorage，不會上傳到伺服器。</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
