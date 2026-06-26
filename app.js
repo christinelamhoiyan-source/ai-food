@@ -215,11 +215,16 @@ photoInput.addEventListener("change", async event => {
   // 這裏是 AI OCR 串接位。
   // 免費 GitHub Pages 不應直接放 OpenAI API Key。
   // 正確做法：圖片 -> 你的後端 / serverless function -> OpenAI API -> 回傳 JSON。
-  alert("圖片已載入。現階段請手動輸入營養數字；之後可在 app.js 的 scanNutritionLabelWithAI() 串接 OpenAI API。");
+try {
+  alert("圖片已載入，AI 正在辨識營養標籤，請等幾秒。");
 
-  // 範例：
-  // const result = await scanNutritionLabelWithAI(file);
-  // fillFormWithScanResult(result);
+  const result = await scanNutritionLabelWithAI(file);
+  fillFormWithScanResult(result);
+
+  alert("AI 辨識完成，請檢查數字是否正確，再按加入今日飲食。");
+} catch (error) {
+  alert("AI 辨識失敗，請手動輸入營養數字。錯誤：" + error.message);
+}
 });
 
 // 示範按鈕：模擬 AI 已辨識營養標籤
@@ -243,6 +248,29 @@ function fillFormWithScanResult(result) {
 
 // ===== 8. 未來串接 OpenAI API 的位置 =====
 async function scanNutritionLabelWithAI(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch("https://little-term-23de.christinelam-hoi-yan.workers.dev", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.error(data);
+    throw new Error(data.error || "AI OCR failed");
+  }
+
+  return {
+    name: data.name || "掃描食物",
+    calories: Number(data.calories) || 0,
+    protein: Number(data.protein) || 0,
+    carbs: Number(data.carbs) || 0,
+    fat: Number(data.fat) || 0
+  };
+}
   // 重要：不要在 GitHub Pages 的前端 JavaScript 寫入 OpenAI API Key。
   // 安全做法：
   // 1. 建立一個 Cloudflare Worker / Vercel / Netlify Function
